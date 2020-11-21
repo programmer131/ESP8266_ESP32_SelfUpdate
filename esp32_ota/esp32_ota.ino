@@ -2,20 +2,6 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
 #include <HTTPUpdate.h>
-#include "Adafruit_MQTT.h"
-#include "Adafruit_MQTT_Client.h"
-
-
-#define AIO_SERVER      "io.adafruit.com"
-#define AIO_SERVERPORT  1883                   // use 8883 for SSL
-#define AIO_USERNAME    "programmer5" //enter your own adafruit io user name
-#define AIO_KEY         ""//enter your own adafruit io key
-
-WiFiClient client_mqtt;
-Adafruit_MQTT_Client mqtt(&client_mqtt, AIO_SERVER, AIO_SERVERPORT, AIO_USERNAME, AIO_KEY);
-Adafruit_MQTT_Subscribe ota_button = Adafruit_MQTT_Subscribe(&mqtt, AIO_USERNAME "/feeds/update-fw");
-Adafruit_MQTT_Publish device_log = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/device-log");
-void MQTT_connect();
  
 const String FirmwareVer={"0.2"}; 
 #define URL_fw_Version "https://raw.githubusercontent.com/programmer131/ESP8266_ESP32_SelfUpdate/master/esp32_bin/bin_version.txt"
@@ -179,9 +165,7 @@ void connect_wifi()
   Serial.println(WiFi.localIP());
 }
 int do_ota=0;
-void ota_button_cb(char *data, uint16_t len) {
-  do_ota=1;
-}
+
 void setup()
 {
   pinMode(button_boot.PIN, INPUT);
@@ -198,35 +182,16 @@ void setup()
 void loop()
 {
   if (button_boot.pressed) {//to connect wifi via Android esp touch app  
-        connect_wifi();
+        if(WiFi.status() != WL_CONNECTED)
+          connect_wifi();
+        else
+          do_ota=1;
         button_boot.pressed = false;
   }
-  MQTT_connect();
   repeatedCall(); 
   if(do_ota)
   {
     do_ota=0;
     firmwareUpdate();
   }
-}
-
-
-// Function to connect and reconnect as necessary to the MQTT server.
-// Should be called in the loop function and it will take care if connecting.
-void MQTT_connect() {
-  int8_t ret;
-
-  // Stop if already connected.
-  if (mqtt.connected()) {
-    return;
-  }
-  Serial.print("Connecting to MQTT... ");
-  if ((ret = mqtt.connect()) != 0) { // connect will return 0 for connected
-       Serial.println(mqtt.connectErrorString(ret));
-       Serial.println("mqtt connect failed");
-       mqtt.disconnect();
-       return;
-  }
-  Serial.println("MQTT Connected!");
- 
 }
