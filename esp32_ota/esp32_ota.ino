@@ -176,8 +176,6 @@ void setup()
   Serial.print("Active firmware version:");
   Serial.println(FirmwareVer);
   pinMode(LED_BUILTIN, OUTPUT);
-  ota_button.setCallback(ota_button_cb);
-  mqtt.subscribe(&ota_button);
 }
 void loop()
 {
