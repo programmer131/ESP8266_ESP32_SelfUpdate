@@ -2,8 +2,12 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
 #include <HTTPUpdate.h>
+
+const char* ssid     = "home2";
+const char* password = "helloworld";
+
  
-const String FirmwareVer={"0.2"}; 
+const String FirmwareVer={"0.3"}; 
 #define URL_fw_Version "https://raw.githubusercontent.com/programmer131/ESP8266_ESP32_SelfUpdate/master/esp32_bin/bin_version.txt"
 #define URL_fw_Bin "https://raw.githubusercontent.com/programmer131/ESP8266_ESP32_SelfUpdate/master/esp32_bin/fw.bin"
 
@@ -97,7 +101,7 @@ int FirmwareVersionCheck(void)
 unsigned long previousMillis = 0;        // will store last time LED was updated
 unsigned long previousMillis_2 = 0; 
 const long interval = 40000;
-const long one_sec_interval=1000;
+const long mini_interval=500;
  void repeatedCall(){
     unsigned long currentMillis = millis();
     if ((currentMillis - previousMillis) >= interval) 
@@ -109,14 +113,12 @@ const long one_sec_interval=1000;
         firmwareUpdate();
       }
     }
-    if ((currentMillis - previousMillis_2) >= one_sec_interval) 
+    if ((currentMillis - previousMillis_2) >= mini_interval) 
     {
       previousMillis_2=currentMillis;
-      Serial.printf(".%d",millis()/1000);
-      if((millis()/1000)%10==0)
+      Serial.print("X");
+      if((millis()%1000==0)
       {
-        Serial.print("FirmwareVer:");
-        Serial.println(FirmwareVer );
         Serial.println();
       }
     }
@@ -139,57 +141,41 @@ void IRAM_ATTR isr() {
     button_boot.numberKeyPresses += 1;
     button_boot.pressed = true;
 }
-void connect_wifi()
-{
-  WiFi.mode(WIFI_AP_STA);
-  WiFi.beginSmartConfig();
-  //Wait for SmartConfig packet from mobile
-  Serial.println("Waiting for SmartConfig.");
-  while (!WiFi.smartConfigDone()) {
-    delay(500);
-    Serial.print(".");
-  }
-  Serial.println("");
-  Serial.println("SmartConfig received.");
-
-  //Wait for WiFi to connect to AP
-  Serial.println("Waiting for WiFi");
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
-
-  Serial.println("WiFi Connected.");
-
-  Serial.print("IP Address: ");
-  Serial.println(WiFi.localIP());
-}
-int do_ota=0;
+void connect_wifi();
 
 void setup()
 {
   pinMode(button_boot.PIN, INPUT);
   attachInterrupt(button_boot.PIN, isr, RISING);
   Serial.begin(115200);
-  WiFi.begin();
-  delay(1000);
   Serial.print("Active firmware version:");
   Serial.println(FirmwareVer);
   pinMode(LED_BUILTIN, OUTPUT);
+  connect_wifi();
 }
 void loop()
 {
-  if (button_boot.pressed) {//to connect wifi via Android esp touch app  
-        if(WiFi.status() != WL_CONNECTED)
-          connect_wifi();
-        else
-          do_ota=1;
-        button_boot.pressed = false;
+  if (button_boot.pressed) {//to connect wifi via Android esp touch app 
+     Serial.println("Firmware update Starting.."); 
+     firmwareUpdate();       
+     button_boot.pressed = false;
   }
   repeatedCall(); 
-  if(do_ota)
-  {
-    do_ota=0;
-    firmwareUpdate();
+}
+
+
+
+void connect_wifi()
+{  
+  Serial.println("Waiting for WiFi");
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+      delay(500);
+      Serial.print(".");
   }
+
+  Serial.println("");
+  Serial.println("WiFi connected");
+  Serial.println("IP address: ");
+  Serial.println(WiFi.localIP());
 }
