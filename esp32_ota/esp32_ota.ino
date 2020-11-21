@@ -117,7 +117,7 @@ const long mini_interval=500;
     {
       previousMillis_2=currentMillis;
       Serial.print("X");
-      if((millis()%1000==0)
+      if(millis()%1000==0)
       {
         Serial.println();
       }
