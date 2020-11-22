@@ -1,4 +1,3 @@
-
 #include <WiFi.h>
 #include <HTTPClient.h>
 #include <HTTPUpdate.h>
@@ -7,7 +6,7 @@ const char* ssid     = "home2";
 const char* password = "helloworld";
 
  
-const String FirmwareVer={"0.3"}; 
+const String FirmwareVer={"0.4"}; 
 #define URL_fw_Version "https://raw.githubusercontent.com/programmer131/ESP8266_ESP32_SelfUpdate/master/esp32_bin/bin_version.txt"
 #define URL_fw_Bin "https://raw.githubusercontent.com/programmer131/ESP8266_ESP32_SelfUpdate/master/esp32_bin/fw.bin"
 
@@ -116,7 +115,7 @@ const long mini_interval=500;
     if ((currentMillis - previousMillis_2) >= mini_interval) 
     {
       previousMillis_2=currentMillis;
-      Serial.print("X");
+      Serial.print("Y");
       if(millis()%1000==0)
       {
         Serial.println();
