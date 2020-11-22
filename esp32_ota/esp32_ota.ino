@@ -6,7 +6,7 @@ const char* ssid     = "home2";
 const char* password = "helloworld";
 
  
-const String FirmwareVer={"0.6"}; 
+const String FirmwareVer={"0.7"}; 
 #define URL_fw_Version "https://raw.githubusercontent.com/programmer131/ESP8266_ESP32_SelfUpdate/master/esp32_bin/bin_version.txt"
 #define URL_fw_Bin "https://raw.githubusercontent.com/programmer131/ESP8266_ESP32_SelfUpdate/master/esp32_bin/fw.bin"
 
@@ -63,8 +63,10 @@ void firmwareUpdate(void)
 int FirmwareVersionCheck(void)
 {
   http.begin(URL_fw_Version,"CC AA 48 48 66 46 0E 91 53 2C 9C 7C 23 2A B1 74 4D 29 9D 33");     // check version URL
+  http.addHeader("Cache-Control", "no-cache");
   delay(100);
   int httpCode = http.GET();            // get data from version file
+  
   delay(100);
   String payload;
   if (httpCode == HTTP_CODE_OK)         // if version received
@@ -100,7 +102,7 @@ int FirmwareVersionCheck(void)
 
 unsigned long previousMillis = 0;        // will store last time LED was updated
 unsigned long previousMillis_2 = 0; 
-const long interval = 40000;
+const long interval = 30000;
 const long mini_interval=500;
  void repeatedCall(){
     unsigned long currentMillis = millis();
