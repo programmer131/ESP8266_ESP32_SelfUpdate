@@ -35,6 +35,7 @@ void FirmwareUpdate()
   http.end();
   if (httpCode == HTTP_CODE_OK)         // if version received
   {
+  payload.trim();
   if(payload.equals(FirmwareVer) )
   {   
      Serial.println("Device already on latest firmware version"); 

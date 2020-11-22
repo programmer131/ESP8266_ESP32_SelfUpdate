@@ -6,7 +6,7 @@ const char* ssid     = "home2";
 const char* password = "helloworld";
 
  
-const String FirmwareVer={"0.5"}; 
+const String FirmwareVer={"0.6"}; 
 #define URL_fw_Version "https://raw.githubusercontent.com/programmer131/ESP8266_ESP32_SelfUpdate/master/esp32_bin/bin_version.txt"
 #define URL_fw_Bin "https://raw.githubusercontent.com/programmer131/ESP8266_ESP32_SelfUpdate/master/esp32_bin/fw.bin"
 
@@ -83,7 +83,7 @@ int FirmwareVersionCheck(void)
     payload.trim();
     if(payload.equals(FirmwareVer) )
     {   
-       Serial.println("Device already on latest firmware version"); 
+       Serial.printf("\nDevice already on latest firmware version:%s\n",FirmwareVer); 
        return 0;
     }
     else
