@@ -6,8 +6,8 @@ const char* ssid     = "home2";
 const char* password = "helloworld";
 
  
-const String FirmwareVer={"0.8"}; 
-#define URL_fw_Version "https://raw.githubusercontent.com/programmer131/ESP8266_ESP32_SelfUpdate/master/esp32_bin/bin_version.txt"
+const String FirmwareVer={"0.9"}; 
+String URL_fw_Version ="https://raw.githubusercontent.com/programmer131/ESP8266_ESP32_SelfUpdate/master/esp32_bin/bin_version.txt";
 #define URL_fw_Bin "https://raw.githubusercontent.com/programmer131/ESP8266_ESP32_SelfUpdate/master/esp32_bin/fw.bin"
 
 //#define URL_fw_Version "http://cade-make.000webhostapp.com/version.txt"
@@ -62,7 +62,8 @@ void firmwareUpdate(void)
 }
 int FirmwareVersionCheck(void)
 {
-  http.begin(URL_fw_Version,"CC AA 48 48 66 46 0E 91 53 2C 9C 7C 23 2A B1 74 4D 29 9D 33");     // check version URL
+  String fwurl=URL_fw_Version+'?'+String(rand());
+  http.begin(fwurl,"CC AA 48 48 66 46 0E 91 53 2C 9C 7C 23 2A B1 74 4D 29 9D 33");     // check version URL
   http.addHeader("Cache-Control", "no-cache");
   delay(100);
   int httpCode = http.GET();            // get data from version file
