@@ -7,7 +7,7 @@ const char* ssid     = "home2";
 const char* password = "helloworld";
 
  
-String FirmwareVer={"1.1"}; 
+String FirmwareVer={"1.2"}; 
 String URL_fw_Version ="https://raw.githubusercontent.com/programmer131/ESP8266_ESP32_SelfUpdate/master/esp32_ota/bin_version.txt";
 #define URL_fw_Bin     "https://raw.githubusercontent.com/programmer131/ESP8266_ESP32_SelfUpdate/master/esp32_ota/fw.bin"
 
@@ -73,7 +73,6 @@ int FirmwareVersionCheck(void)
   if(client) {
     client -> setCACert(rootCACertificate);
 
-    {
       // Add a scoping block for HTTPClient https to make sure it is destroyed before WiFiClientSecure *client is 
       HTTPClient https;
   
@@ -93,7 +92,7 @@ int FirmwareVersionCheck(void)
     Serial.println(httpCode);
   }  
   https.end();
-  
+  delete client;
   if (httpCode == HTTP_CODE_OK)         // if version received
   {
     payload.trim();
@@ -104,15 +103,16 @@ int FirmwareVersionCheck(void)
     }
     else
     {
-  
+
       Serial.println(payload);
       Serial.println("New firmware detected");
       return 1;
     }
   }
       }
-    }
-  }
+    
+   delete client;
+   }
 }
   
     
