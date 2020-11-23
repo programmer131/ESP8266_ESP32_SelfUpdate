@@ -7,7 +7,7 @@ const char * ssid = "home2";
 const char * password = "helloworld";
 
 String FirmwareVer = {
-  "1.4"
+  "1.5"
 };
 String URL_fw_Version = "https://raw.githubusercontent.com/programmer131/ESP8266_ESP32_SelfUpdate/master/esp32_ota/bin_version.txt";
 #define URL_fw_Bin "https://raw.githubusercontent.com/programmer131/ESP8266_ESP32_SelfUpdate/master/esp32_ota/fw.bin"
@@ -93,29 +93,27 @@ int FirmwareVersionCheck(void) {
       https.end();
     }
     delete client;
-
+  }
       
-      if (httpCode == HTTP_CODE_OK) // if version received
-      {
-        payload.trim();
-        if (payload.equals(FirmwareVer)) {
-          Serial.printf("\nDevice already on latest firmware version:%s\n", FirmwareVer);
-          return 0;
-        } 
-        else 
-        {
-
-          Serial.println(payload);
-          Serial.println("New firmware detected");
-          return 1;
-        }
-      }   
-   }
+  if (httpCode == HTTP_CODE_OK) // if version received
+  {
+    payload.trim();
+    if (payload.equals(FirmwareVer)) {
+      Serial.printf("\nDevice already on latest firmware version:%s\n", FirmwareVer);
+      return 0;
+    } 
+    else 
+    {
+      Serial.println(payload);
+      Serial.println("New firmware detected");
+      return 1;
+    }
+  }   
 }
 
 unsigned long previousMillis = 0; // will store last time LED was updated
 unsigned long previousMillis_2 = 0;
-const long interval = 10000;
+const long interval = 60000;
 const long mini_interval = 200;
 void repeatedCall() {
   static int num=0;
