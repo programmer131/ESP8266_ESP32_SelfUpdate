@@ -7,7 +7,7 @@ const char * ssid = "home2";
 const char * password = "helloworld";
 
 String FirmwareVer = {
-  "1.3"
+  "1.4"
 };
 String URL_fw_Version = "https://raw.githubusercontent.com/programmer131/ESP8266_ESP32_SelfUpdate/master/esp32_ota/bin_version.txt";
 #define URL_fw_Bin "https://raw.githubusercontent.com/programmer131/ESP8266_ESP32_SelfUpdate/master/esp32_ota/fw.bin"
@@ -131,6 +131,7 @@ void repeatedCall() {
     previousMillis_2 = currentMillis;
     Serial.print("idle loop...");
     Serial.println(num++);
+    Serial.print("active fw version:");
     Serial.println(FirmwareVer);
     if (millis() % 1000 == 0) {
       Serial.println();
