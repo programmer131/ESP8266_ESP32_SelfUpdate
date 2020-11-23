@@ -1,18 +1,18 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
 #include <HTTPUpdate.h>
+#include <WiFiClientSecure.h>
 
 const char* ssid     = "home2";
 const char* password = "helloworld";
 
  
-const String FirmwareVer={"0.9"}; 
-String URL_fw_Version ="https://raw.githubusercontent.com/programmer131/ESP8266_ESP32_SelfUpdate/master/esp32_bin/bin_version.txt";
-#define URL_fw_Bin "https://raw.githubusercontent.com/programmer131/ESP8266_ESP32_SelfUpdate/master/esp32_bin/fw.bin"
+String FirmwareVer={"1.1"}; 
+String URL_fw_Version ="https://raw.githubusercontent.com/programmer131/ESP8266_ESP32_SelfUpdate/master/esp32_ota/bin_version.txt";
+#define URL_fw_Bin     "https://raw.githubusercontent.com/programmer131/ESP8266_ESP32_SelfUpdate/master/esp32_ota/fw.bin"
 
 //#define URL_fw_Version "http://cade-make.000webhostapp.com/version.txt"
 //#define URL_fw_Bin "http://cade-make.000webhostapp.com/firmware.bin"
-HTTPClient http;
  
 const char* rootCACertificate = \
 "-----BEGIN CERTIFICATE-----\n"
@@ -62,24 +62,37 @@ void firmwareUpdate(void)
 }
 int FirmwareVersionCheck(void)
 {
-  String fwurl=URL_fw_Version+'?'+String(rand());
-  http.begin(fwurl,"CC AA 48 48 66 46 0E 91 53 2C 9C 7C 23 2A B1 74 4D 29 9D 33");     // check version URL
-  http.addHeader("Cache-Control", "no-cache");
-  delay(100);
-  int httpCode = http.GET();            // get data from version file
+    String payload;
+  String fwurl="";
+  fwurl+=URL_fw_Version;
+  fwurl+="?";
+  fwurl+=String(rand());
+  Serial.println(fwurl);
+  WiFiClientSecure *client = new WiFiClientSecure;
   
-  delay(100);
-  String payload;
+  if(client) {
+    client -> setCACert(rootCACertificate);
+
+    {
+      // Add a scoping block for HTTPClient https to make sure it is destroyed before WiFiClientSecure *client is 
+      HTTPClient https;
+  
+      if (https.begin(*client,fwurl)) {  // HTTPS      
+        Serial.print("[HTTPS] GET...\n");
+        // start connection and send HTTP header
+        int httpCode = https.GET();
+        
+
   if (httpCode == HTTP_CODE_OK)         // if version received
   {
-    payload = http.getString();  // save received version
+    payload = https.getString();  // save received version
   }
   else
   {
     Serial.print("error in downloading version file:");
     Serial.println(httpCode);
   }  
-  http.end();
+  https.end();
   
   if (httpCode == HTTP_CODE_OK)         // if version received
   {
@@ -91,20 +104,23 @@ int FirmwareVersionCheck(void)
     }
     else
     {
-      Serial.printf("version file payload:\"%s\"");
+  
       Serial.println(payload);
       Serial.println("New firmware detected");
       return 1;
     }
   }
+      }
+    }
+  }
 }
-      
+  
     
 
 unsigned long previousMillis = 0;        // will store last time LED was updated
 unsigned long previousMillis_2 = 0; 
-const long interval = 30000;
-const long mini_interval=500;
+const long interval = 10000;
+const long mini_interval=200;
  void repeatedCall(){
     unsigned long currentMillis = millis();
     if ((currentMillis - previousMillis) >= interval) 
