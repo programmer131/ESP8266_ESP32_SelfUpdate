@@ -7,7 +7,7 @@ const char * ssid = "home2";
 const char * password = "helloworld";
 
 String FirmwareVer = {
-  "1.6"
+  "1.8"
 };
 String URL_fw_Version = "https://raw.githubusercontent.com/programmer131/ESP8266_ESP32_SelfUpdate/master/esp32_ota/bin_version.txt";
 #define URL_fw_Bin "https://raw.githubusercontent.com/programmer131/ESP8266_ESP32_SelfUpdate/master/esp32_ota/fw.bin"
@@ -81,8 +81,9 @@ int FirmwareVersionCheck(void) {
     { // HTTPS      
       Serial.print("[HTTPS] GET...\n");
       // start connection and send HTTP header
+      delay(100);
       httpCode = https.GET();
-
+      delay(100);
       if (httpCode == HTTP_CODE_OK) // if version received
       {
         payload = https.getString(); // save received version
@@ -108,13 +109,14 @@ int FirmwareVersionCheck(void) {
       Serial.println("New firmware detected");
       return 1;
     }
-  }   
+  } 
+  return 0;  
 }
 
 unsigned long previousMillis = 0; // will store last time LED was updated
 unsigned long previousMillis_2 = 0;
 const long interval = 60000;
-const long mini_interval = 200;
+const long mini_interval = 1000;
 void repeatedCall() {
   static int num=0;
   unsigned long currentMillis = millis();
@@ -131,6 +133,9 @@ void repeatedCall() {
     Serial.println(num++);
     Serial.print("active fw version:");
     Serial.println(FirmwareVer);
+   if(WiFi.status() == WL_CONNECTED) {
+       Serial.println("wifi connected");
+  }
   }
 }
 
