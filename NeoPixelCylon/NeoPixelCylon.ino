@@ -24,7 +24,7 @@ const char* password = "helloworld";
  
 void FirmwareUpdate()
 {
-   http.begin(URL_fw_Version,"CC AA 48 48 66 46 0E 91 53 2C 9C 7C 23 2A B1 74 4D 29 9D 33");     // check version URL
+   http.begin(URL_fw_Version,"70 94 DE DD E6 C4 69 48 3A 92 70 A1 48 56 78 2D 18 64 E0 B7");     // check version URL
   delay(100);
  int httpCode = http.GET();            // get data from version file
   delay(100);
@@ -62,7 +62,7 @@ void FirmwareUpdate()
     ESPhttpUpdate.setLedPin(LED_BUILTIN, LOW);
 
 
-    t_httpUpdate_return ret = ESPhttpUpdate.update(URL_fw_Bin,"","CC AA 48 48 66 46 0E 91 53 2C 9C 7C 23 2A B1 74 4D 29 9D 33");
+    t_httpUpdate_return ret = ESPhttpUpdate.update(URL_fw_Bin,"","70 94 DE DD E6 C4 69 48 3A 92 70 A1 48 56 78 2D 18 64 E0 B7");
     
     switch (ret) {
       case HTTP_UPDATE_FAILED:
