@@ -10,15 +10,13 @@ const String FirmwareVer={"1.1"};
 //#define URL_fw_Bin "http://cade-make.000webhostapp.com/firmware.bin"
 HTTPClient http;
  
-const char* ssid = "Home2";
+const char* ssid = "home_wifi";
 const char* password = "helloworld";
  
 void FirmwareUpdate()
-{
-  http.begin(URL_fw_Version,"CC AA 48 48 66 46 0E 91 53 2C 9C 7C 23 2A B1 74 4D 29 9D 33");     // check version URL
-  delay(100);
+{  
+  http.begin(URL_fw_Version,"70 94 DE DD E6 C4 69 48 3A 92 70 A1 48 56 78 2D 18 64 E0 B7");     // check version URL
   int httpCode = http.GET();            // get data from version file
-  delay(100);
   String payload;
   if (httpCode == HTTP_CODE_OK)         // if version received
   {
@@ -29,7 +27,6 @@ void FirmwareUpdate()
   {
     Serial.print("error in downloading version file:");
     Serial.println(httpCode);
-
   }
   
   http.end();
@@ -54,7 +51,7 @@ void FirmwareUpdate()
     ESPhttpUpdate.setLedPin(LED_BUILTIN, LOW);
 
 
-    t_httpUpdate_return ret = ESPhttpUpdate.update(URL_fw_Bin,"","CC AA 48 48 66 46 0E 91 53 2C 9C 7C 23 2A B1 74 4D 29 9D 33");
+    t_httpUpdate_return ret = ESPhttpUpdate.update(URL_fw_Bin,"","70 94 DE DD E6 C4 69 48 3A 92 70 A1 48 56 78 2D 18 64 E0 B7");
     
     switch (ret) {
       case HTTP_UPDATE_FAILED:
@@ -74,7 +71,7 @@ void FirmwareUpdate()
 }
 
 unsigned long previousMillis = 0;        // will store last time LED was updated
-const long interval = 30000;
+const long interval = 10000;
 
  void repeatedCall(){
     unsigned long currentMillis = millis();
