@@ -37,18 +37,20 @@ void repeatedCall() {
   }
   if ((currentMillis - previousMillis_2) >= mini_interval) {
     previousMillis_2 = currentMillis;
-    Serial.print("idle loop...");
-    Serial.print(num++);
     Serial.print(" Active fw version:");
     Serial.println(FirmwareVer);
-   if(WiFi.status() == WL_CONNECTED) 
-   {
+	struct tm timeinfo;
+	gmtime_r(&now, &timeinfo);
+	Serial.print("Current time: ");
+	Serial.print(asctime(&timeinfo));
+    if(WiFi.status() == WL_CONNECTED) 
+    {
        Serial.println("wifi connected");
-   }
-   else
-   {
-    connect_wifi();
-   }
+    }
+    else
+    {
+		connect_wifi();
+    }
   }
 }
 
