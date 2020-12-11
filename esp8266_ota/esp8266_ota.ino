@@ -151,7 +151,7 @@ void setup()
   Serial.println("");
   Serial.println("Start");
   WiFi.mode(WIFI_STA);
-  void connect_wifi();  
+  connect_wifi();  
   setClock();
   pinMode(LED_BUILTIN, OUTPUT);
   
